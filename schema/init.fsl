@@ -1,0 +1,3 @@
+collection Product {
+  history_days 0
+}
