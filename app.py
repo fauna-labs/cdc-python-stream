@@ -4,7 +4,6 @@ from dotenv import load_dotenv
 from flask import Flask, Response
 import os
 import threading
-from algoliasearch.search_client import SearchClient
 
 # Load environment variables from .env file
 load_dotenv()
@@ -14,11 +13,6 @@ app = Flask(__name__)
 # Initialize Fauna client
 client = Client(secret=os.getenv("FAUNA_SECRET"), endpoint=os.getenv("FAUNA_ENDPOINT"))
 thread = None
-
-# Initialize Algolia client
-algolia_client = SearchClient.create(os.getenv("ALGOLIA_APP_ID"), os.getenv("ALGOLIA_API_KEY"))
-# Create a new index and add a record
-index = algolia_client.init_index("product_index")
 
 def create_app():
   app = Flask(__name__)
@@ -57,11 +51,12 @@ def stream_events():
         "objectID": data.id,
         "name": data.get("name"),
       }
-      print("Adding record to Algolia index")
       if (type == "add"):
-        index.save_object(record).wait()
-      elif (type == "remove"):
-        index.delete_object(data.id).wait()
+        print("Add Event")
+      if (type == "remove"):
+        print("Remove Event")
+      if (type == "update"):
+        print("Update Event")
       
 
 # Start the event streaming in a separate thread
